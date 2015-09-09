@@ -1,0 +1,51 @@
+{
+  "name": "kerplunk-p2p",
+  "displayName": "P2P stuff",
+  "description": "",
+  "version": "0.0.1",
+  "kerplunk": {
+    "dependencies": [
+      "kerplunk-pgp"
+    ],
+    "permissions": {
+      "kerplunk-identity": {
+        "models": [
+          "Identity"
+        ]
+      },
+      "kerplunk-pgp": {
+        "methods": [
+          "myPrivateKey",
+          "myPublicKey"
+        ]
+      }
+    },
+    "postInstallComponent": "kerplunk-p2p:postInstall"
+  },
+  "keywords": [
+    "kerplunk-plugin",
+    "kp:Social Networking",
+    "kp:p2p"
+  ],
+  "engines": {
+    "node": ">=0.10"
+  },
+  "main": "./lib/index.js",
+  "dependencies": {
+    "lodash": "^3.7.0",
+    "openpgp": "^1.2.0",
+    "react": "^0.13.2",
+    "request": "^2.60.0",
+    "when": "^3.7.3"
+  },
+  "devDependencies": {
+    "coffee-script": "^1.9.1",
+    "glut": "0.0.1",
+    "glut-coffee-amdify": "0.0.0",
+    "gulp": "^3.8.8",
+    "gulp-coffee": "^2.3.1"
+  },
+  "scripts": {
+    "prepublish": "rm -rf ./lib ./public && gulp"
+  }
+}
