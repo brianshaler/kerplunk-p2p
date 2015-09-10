@@ -52,5 +52,6 @@
   "repository": {
     "type": "git",
     "url": "git://github.com/brianshaler/kerplunk-p2p.git"
-  }
+  },
+  "license": "MIT"
 }
