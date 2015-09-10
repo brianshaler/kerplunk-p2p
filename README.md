@@ -1,6 +1,6 @@
 # kerplunk-p2p
 
-[Kerplunk](https://github.com/brianshaler/kerplunk) plugin. 
+[Kerplunk](https://github.com/brianshaler/kerplunk) plugin. Proof of concept for connecting multiple Kerplunk instances together.
 
 [![Build Status](https://travis-ci.org/brianshaler/kerplunk-p2p.svg)](https://travis-ci.org/brianshaler/kerplunk-p2p)
 [![npm version](https://img.shields.io/npm/v/kerplunk-p2p.svg)](https://www.npmjs.com/package/kerplunk-p2p)
