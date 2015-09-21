@@ -13,14 +13,12 @@ Request = React.createFactory React.createClass
     @props.onIgnore @props.request.domain
 
   render: ->
-    requestedAt = @props.request.requestedAt
-    if typeof requestedAt is 'string'
-      requestedAt = new Date requestedAt
-    DOM.p
-      key: "#{@props.request.domain}-#{requestedAt.getTime()}"
-    ,
+    # requestedAt = @props.request.requestedAt
+    # if typeof requestedAt is 'string'
+    #   requestedAt = new Date requestedAt
+    DOM.p null,
       DOM.strong null, @props.request.domain
-      DOM.em null, " (#{requestedAt.toISOString()})"
+      # DOM.em null, " (#{requestedAt.toISOString()})"
       DOM.a
         href: '/admin/p2p/connect/reciprocate'
         onClick: @handleFollow
@@ -75,8 +73,9 @@ module.exports = React.createFactory React.createClass
       friends = _.map @state.friends, (friend) ->
         return friend unless friend.domain == domain
         friend = _.clone friend, true
-        friend.requested = true
-        friend.requestedAt = new Date()
+        friend.follower = true
+        friend
+        # friend.requestedAt = new Date()
       @setState
         friends: friends
 
@@ -101,11 +100,13 @@ module.exports = React.createFactory React.createClass
     e.preventDefault()
     query = React.findDOMNode(@refs.query).value
     parameters = React.findDOMNode(@refs.parameters).value
-    url = '/admin/p2p/connect/testask.json'
+    reduction = React.findDOMNode(@refs.reduction).value
+    url = '/admin/p2p/query/send.json'
     options =
       query: query
       parameters: parameters
       degrees: @state.degrees
+      reduction: reduction
       json: true
     @setState
       queryResults: null
@@ -117,18 +118,18 @@ module.exports = React.createFactory React.createClass
 
   render: ->
     friends = _.filter @state.friends, (friend) ->
-      friend.following and friend.requested
+      friend.following and friend.follower
     pending = _.filter @state.friends, (friend) ->
-      friend.following and !friend.requested
+      friend.following and !friend.follower
     requests = _.filter @state.friends, (friend) ->
-      !friend.following and friend.requested
+      !friend.following and friend.follower
     DOM.section
       className: 'content'
     ,
       DOM.section
         className: 'col-lg-12'
       ,
-        DOM.h3 null, "Connect (#{@props.host ? ''})"
+        DOM.h3 null, "Connect (#{@props.profile.domain ? ''})"
         DOM.form
           onSubmit: @onFormSubmit
         ,
@@ -201,6 +202,12 @@ module.exports = React.createFactory React.createClass
               ref: 'parameters'
               defaultValue: '{"message":"hi"}'
               placeholder: 'parameters'
+          DOM.p null,
+            'reduction: '
+            DOM.input
+              ref: 'reduction'
+              defaultValue: 'tree'
+              placeholder: '(e.g. tree, domain, other)'
           DOM.p null,
             'degrees: '
             DOM.input

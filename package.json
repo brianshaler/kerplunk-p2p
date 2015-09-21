@@ -20,6 +20,18 @@
         ]
       }
     },
+    "services": {
+      "neo4j": {
+        "private": true,
+        "image": "neo4j/neo4j:2.2.5",
+        "volumes": [
+          "/data"
+        ],
+        "ports": [
+          "7474/tcp"
+        ]
+      }
+    },
     "postInstallComponent": "kerplunk-p2p:postInstall"
   },
   "keywords": [
@@ -33,6 +45,8 @@
   "main": "./lib/index.js",
   "dependencies": {
     "lodash": "^3.7.0",
+    "neo4j": "^2.0.0-RC2",
+    "neo4j-simple": "^0.7.12",
     "openpgp": "^1.2.0",
     "react": "^0.13.2",
     "request": "^2.60.0",
