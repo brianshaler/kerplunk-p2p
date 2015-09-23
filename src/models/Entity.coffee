@@ -11,6 +11,7 @@ module.exports = (db) ->
       domain:
         type: String
         required: true
+        unique: true
       publicKey:
         type: String
       visibility:
