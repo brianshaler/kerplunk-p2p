@@ -3,16 +3,16 @@ request = require 'request'
 openpgp = require 'openpgp'
 Promise = require 'when'
 
-DB = require './db'
 EntityModel = require './models/Entity'
 
 module.exports = (System) ->
   db = null
-  getDB = null
   socket = null
 
   myPublicKey = System.getMethod 'kerplunk-pgp', 'myPublicKey'
   myPrivateKey = System.getMethod 'kerplunk-pgp', 'myPrivateKey'
+
+  getDB = System.getMethod 'kerplunk-graphdb', 'getDB'
 
   meCache = null
 
@@ -54,7 +54,7 @@ module.exports = (System) ->
 
   getFriends = ->
     Promise.all [
-      getDB
+      getDB()
       getMe()
     ]
     .then ([db, me]) ->
@@ -66,7 +66,7 @@ module.exports = (System) ->
 
   getFriendsDomains = ->
     Promise.all [
-      getDB
+      getDB()
       getMe()
     ]
     .then ([db, me]) ->
@@ -79,7 +79,7 @@ module.exports = (System) ->
 
   getFollowingDomains = ->
     Promise.all [
-      getDB
+      getDB()
       getMe()
     ]
     .then ([db, me]) ->
@@ -336,8 +336,6 @@ module.exports = (System) ->
 
   methods:
     getMe: getMe
-    getDB: ->
-      getDB.then (db) -> db
     getFriends: getFriends
     getFriendsDomains: getFriendsDomains
     getFollowingDomains: getFollowingDomains
@@ -348,10 +346,9 @@ module.exports = (System) ->
     #   console.log 'client said what?', data
     # socket.on 'connection', (spark, data) ->
     #   console.log 'p2p connection'
-    getDB = DB System
+    getDB()
     .then (_db) ->
       db = _db
-    getDB.then (db) ->
       # console.log 'got db', db
       Entity = db.model EntityModel
       getMe()
