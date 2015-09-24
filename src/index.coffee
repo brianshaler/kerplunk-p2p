@@ -3,6 +3,7 @@ request = require 'request'
 openpgp = require 'openpgp'
 Promise = require 'when'
 
+Authorization = require './authorization'
 EntityModel = require './models/Entity'
 
 module.exports = (System) ->
@@ -10,7 +11,6 @@ module.exports = (System) ->
   socket = null
 
   myPublicKey = System.getMethod 'kerplunk-pgp', 'myPublicKey'
-  myPrivateKey = System.getMethod 'kerplunk-pgp', 'myPrivateKey'
 
   getDB = System.getMethod 'kerplunk-graphdb', 'getDB'
 
@@ -36,6 +36,8 @@ module.exports = (System) ->
     .catch (err) ->
       console.log 'something terrible has happened'
       console.log err?.stack ? err
+
+  authorization = Authorization System, getMe
 
   updateMe = (profile) ->
     getMe()
@@ -196,55 +198,6 @@ module.exports = (System) ->
     , (err) ->
       next err
 
-  authorize = ->
-    (req, res, next) ->
-      signature = req.query?.signature ? req.body?.signature
-      domain = req.query?.domain ? req.body?.domain
-      timestamp = req.query?.timestamp ? req.body?.timestamp
-      try
-        if typeof timestamp is 'string'
-          if /^[\d]+$/.test timestamp
-            timestamp = parseInt timestamp
-          else
-            date = Date.parse timestamp
-            timestamp = date.getTime()
-      catch ex
-        return next ex
-      unless 30 * 1000 > Math.abs Date.now() - timestamp
-        return next new Error 'bad timestamp'
-
-      Entity = db.model 'Entity'
-      getMe().then (me) ->
-        me.getRelationshipsWith domain, 'FOLLOWING', Entity.REL_BOTH
-        .then (rels) ->
-          return unless rels?.length > 0
-          friend = if rels[0][0]?.domain == me?.domain
-            rels[0][2]
-          else if rels[0][2]?.domain == me?.domain
-            rels[0][0]
-
-          if !friend?.publicKey
-            console.log "no publicKey for #{domain}?", rels
-          return unless friend?.publicKey
-          friend
-      .then (friend) ->
-        return false unless friend?.publicKey
-        publicKey = openpgp.key.readArmored friend.publicKey
-        message = openpgp.cleartext.readArmored signature
-        openpgp
-        .verifyClearSignedMessage publicKey.keys, message
-        .then (pgpMessage) ->
-          # console.log 'verified?', pgpMessage
-          if pgpMessage?.signatures?[0]?.valid == true and pgpMessage.text == "{#{domain}|#{timestamp}}"
-            true
-          else
-            throw new Error "signature issue"
-      .done (isAuthorized) ->
-        return next new Error 'not authorized' unless isAuthorized == true
-        next()
-      , (err) ->
-        next err
-
   routes:
     admin:
       '/admin/p2p/settings': 'settings'
@@ -253,9 +206,16 @@ module.exports = (System) ->
       '/admin/p2p/clear': 'clear'
     public:
       '/connect/request': 'handleRequest'
+      '/connect/test': 'testAuth'
+      '/connect/auth': 'authenticationRedirect'
+      '/connect/verify': 'verify'
+      '/connect/acknowledge': 'acknowledge'
+      '/connect/logout': 'logout'
+    friend:
+      '/connect/private': 'testPrivate'
 
   auth:
-    friend: authorize
+    friend: authorization.authorize
 
   handlers:
     settings: (req, res, next) ->
@@ -327,12 +287,35 @@ module.exports = (System) ->
           message: 'cleared'
       , (err) -> next err
 
+    testAuth: (req, res, next) ->
+      res.header 'Cache-Control', 'no-cache, no-store, must-revalidate'
+      res.header 'Pragma', 'no-cache'
+      res.render 'testAuth'
+    authenticationRedirect: authorization.authenticationRedirect
+    acknowledge: authorization.acknowledge
+    verify: authorization.verify
+    testPrivate: (req, res, next) ->
+      res.header 'Cache-Control', 'no-cache, no-store, must-revalidate'
+      res.header 'Pragma', 'no-cache'
+      res.send
+        message: 'hopefully this means we are friends.'
+        authorizedDomain: req.session.friendDomain
+    logout: (req, res, next) ->
+      res.header 'Cache-Control', 'no-cache, no-store, must-revalidate'
+      res.header 'Pragma', 'no-cache'
+      redirectUri = req.query?.redirectUri ? '/'
+      req.session.friendDomain = ''
+      req.session.friendSessionToken = ''
+      res.redirect redirectUri
+
   globals:
     public:
       nav:
         P2P:
           Settings: '/admin/p2p/settings'
           Connect: '/admin/p2p/connect'
+      preContent:
+        p2p: 'kerplunk-p2p:testAuth'
 
   methods:
     getMe: getMe

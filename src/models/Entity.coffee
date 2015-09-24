@@ -14,6 +14,8 @@ module.exports = (db) ->
         unique: true
       publicKey:
         type: String
+      sessionToken:
+        type: String
       visibility:
         type: Number
         default: -> 1
