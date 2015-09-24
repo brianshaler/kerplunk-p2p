@@ -21,7 +21,7 @@
       },
       "kerplunk-pgp": {
         "methods": [
-          "myPrivateKey",
+          "signClearMessage",
           "myPublicKey"
         ]
       }
