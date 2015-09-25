@@ -2,7 +2,7 @@
   "name": "kerplunk-p2p",
   "displayName": "P2P stuff",
   "description": "Proof of concept for connecting multiple Kerplunk instances together.",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "kerplunk": {
     "dependencies": [
       "kerplunk-graphdb",
