@@ -14,7 +14,7 @@ module.exports = React.createFactory React.createClass
       window.location.search
       window.location.hash
     ].join ''
-    console.log 'fullPath', fullPath
+    # console.log 'fullPath', fullPath
     @setState
       redirectUri: fullPath
 
@@ -33,9 +33,9 @@ module.exports = React.createFactory React.createClass
       className: 'content'
     ,
       if @state.show
-        if @props.friendDomain
+        if @props.session?.userName
           DOM.div null,
-            DOM.h3 null, "Welcome #{@props.friendDomain}!"
+            DOM.h3 null, "Welcome #{@props.session.userName}!"
             DOM.p null,
               DOM.a
                 href: "/connect/logout?redirectUri=#{@state.redirectUri}"
@@ -60,7 +60,7 @@ module.exports = React.createFactory React.createClass
           href: '#'
           onClick: @handleToggle
         ,
-          if @props.friendDomain
-            "logged in as #{@props.friendDomain}"
+          if @props.session?.userName
+            "logged in as #{@props.session.userName}"
           else
             'log in'

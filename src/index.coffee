@@ -211,6 +211,7 @@ module.exports = (System) ->
       '/connect/verify': 'verify'
       '/connect/acknowledge': 'acknowledge'
       '/connect/logout': 'logout'
+      '/connect/publickey': 'publickey'
     friend:
       '/connect/private': 'testPrivate'
 
@@ -287,6 +288,15 @@ module.exports = (System) ->
           message: 'cleared'
       , (err) -> next err
 
+    publickey: (req, res, next) ->
+      myPublicKey()
+      .done (pubkey) ->
+        res.send
+          message: 'ok'
+          publicKey: pubkey
+      , (err) ->
+        next err
+
     testAuth: (req, res, next) ->
       res.header 'Cache-Control', 'no-cache, no-store, must-revalidate'
       res.header 'Pragma', 'no-cache'
@@ -299,13 +309,14 @@ module.exports = (System) ->
       res.header 'Pragma', 'no-cache'
       res.send
         message: 'hopefully this means we are friends.'
-        authorizedDomain: req.session.friendDomain
+        userName: req.session.userName
     logout: (req, res, next) ->
       res.header 'Cache-Control', 'no-cache, no-store, must-revalidate'
       res.header 'Pragma', 'no-cache'
       redirectUri = req.query?.redirectUri ? '/'
-      req.session.friendDomain = ''
-      req.session.friendSessionToken = ''
+      req.session.userName = ''
+      req.session.sessionToken = ''
+      req.session.isFriend = ''
       res.redirect redirectUri
 
   globals:
@@ -329,12 +340,15 @@ module.exports = (System) ->
     #   console.log 'client said what?', data
     # socket.on 'connection', (spark, data) ->
     #   console.log 'p2p connection'
-    getDB()
-    .then (_db) ->
-      db = _db
-      # console.log 'got db', db
-      Entity = db.model EntityModel
-      getMe()
+    setup = ->
+      getDB()
+      .then (_db) ->
+        db = _db
+        # console.log 'got db', db
+        Entity = db.model EntityModel
+        getMe()
+    setup()
     .catch (err) ->
       console.log 'uhh.. p2p init', err?.stack ? err
+      setTimeout setup, 7000
     next()
