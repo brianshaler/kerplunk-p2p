@@ -20,6 +20,8 @@ module.exports = React.createFactory React.createClass
 
   handleToggle: (e) ->
     e.preventDefault()
+    if @props?.isUser
+      return window.location.href = '/admin'
     @setState
       show: !@state.show
 
