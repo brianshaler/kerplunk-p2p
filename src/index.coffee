@@ -204,12 +204,12 @@ module.exports = (System) ->
       '/admin/p2p/connect': 'connect'
       '/admin/p2p/connect/request': 'sendRequest'
       '/admin/p2p/clear': 'clear'
+      '/connect/acknowledge': 'acknowledge'
     public:
       '/connect/request': 'handleRequest'
       '/connect/test': 'testAuth'
       '/connect/auth': 'authenticationRedirect'
       '/connect/verify': 'verify'
-      '/connect/acknowledge': 'acknowledge'
       '/connect/logout': 'logout'
       '/connect/publickey': 'publickey'
     friend:
