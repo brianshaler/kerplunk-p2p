@@ -229,33 +229,33 @@ module.exports = React.createFactory React.createClass
             'query: '
             DOM.input
               disabled: true
-            , 'myPlaces'
+              value: 'myPlaces'
           DOM.p null,
             'parameters: '
             DOM.input
               disabled: true
-            , '{"lat":33.42,"lng":-111.94,"radius":1}'
+              value: '{"lat":33.42,"lng":-111.94,"radius":1}'
           DOM.p null,
             'reduction: '
             DOM.input
               disabled: true
-            , 'domain'
+              value: 'domain'
           DOM.hr()
           DOM.p null,
             'query: '
             DOM.input
               disabled: true
-            , 'echo'
+              value: 'echo'
           DOM.p null,
             'parameters: '
             DOM.input
               disabled: true
-            , '{"message":"hi"}'
+              value: '{"message":"hi"}'
           DOM.p null,
             'reduction: '
             DOM.input
               disabled: true
-            , 'someId'
+              value: 'someId'
       DOM.section
         className: 'col-lg-12'
       ,
