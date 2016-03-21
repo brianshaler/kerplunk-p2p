@@ -38,7 +38,7 @@
   },
   "main": "./lib/index.js",
   "dependencies": {
-    "lodash": "^3.7.0",
+    "lodash": "^4.6.1",
     "openpgp": "^1.2.0",
     "react": "^0.13.2",
     "request": "^2.60.0",

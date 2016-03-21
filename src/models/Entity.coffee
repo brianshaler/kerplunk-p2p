@@ -180,7 +180,7 @@ module.exports = (db) ->
           limit: limit
       .then (rels) ->
         return [] unless rels?.length > 0
-        _.pluck rels, opt.prop
+        _.map rels, opt.prop
 
     getRelationships: (rel = '', dir = Entity.REL_EITHER, limit = 100) =>
       dir = Entity.REL_EITHER unless dir > 0
