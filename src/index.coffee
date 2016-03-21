@@ -284,6 +284,7 @@ module.exports = (System) ->
         OPTIONAL MATCH (entity)-[rel]-()
         DELETE entity, rel'
       .done ->
+        meCache = null
         res.send
           message: 'cleared'
       , (err) -> next err
