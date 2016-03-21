@@ -221,6 +221,41 @@ module.exports = React.createFactory React.createClass
               value: 'ask'
         if @state.queryResults
           DOM.pre null, JSON.stringify @state.queryResults, null, 2
+        else
+          null
+        DOM.div null,
+          DOM.p null, 'Example queries'
+          DOM.p null,
+            'query: '
+            DOM.input
+              disabled: true
+            , 'myPlaces'
+          DOM.p null,
+            'parameters: '
+            DOM.input
+              disabled: true
+            , '{"lat":33.42,"lng":-111.94,"radius":1}'
+          DOM.p null,
+            'reduction: '
+            DOM.input
+              disabled: true
+            , 'domain'
+          DOM.hr()
+          DOM.p null,
+            'query: '
+            DOM.input
+              disabled: true
+            , 'echo'
+          DOM.p null,
+            'parameters: '
+            DOM.input
+              disabled: true
+            , '{"message":"hi"}'
+          DOM.p null,
+            'reduction: '
+            DOM.input
+              disabled: true
+            , 'someId'
       DOM.section
         className: 'col-lg-12'
       ,
