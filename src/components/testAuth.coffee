@@ -32,7 +32,7 @@ module.exports = React.createFactory React.createClass
         top: '0px'
         right: '0px'
         zIndex: '3'
-      className: 'content'
+      className: 'content fixed-link'
     ,
       if @state.show
         if @props.session?.userName
